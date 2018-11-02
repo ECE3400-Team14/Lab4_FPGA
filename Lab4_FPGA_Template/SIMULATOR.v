@@ -31,12 +31,7 @@ always @ (posedge CLK) begin
     VSYNC <= 0;
     DATA <= 0;
     //reset row(?)
-    if(row == 143) begin
-    	row <= 0;
-    end
-   	else begin
-   		row <= row + 1;
-   	end
+    row = 0;
   end
   else begin
     if (counter > 0 && counter < 3) begin
@@ -94,6 +89,7 @@ always @ (posedge CLK) begin
           DATA <= 0;
 			 //reset pattern
 			 column <= 0;
+			 row <= row + 1;
         end
       end
     end
