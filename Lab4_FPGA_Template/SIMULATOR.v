@@ -21,7 +21,7 @@ reg [15:0] counter = 0;
 wire [15:0] YELLOW = 16'b1111111111100000;
 wire [15:0] CYAN =   16'b0000011111111111;
 reg [7:0] column;
-reg [7:0] row;
+reg [7:0] row = 0;
 
 always @ (posedge CLK) begin
   if (counter == `FRAME_LENGTH) begin
@@ -30,6 +30,13 @@ always @ (posedge CLK) begin
     HREF <= 0;
     VSYNC <= 0;
     DATA <= 0;
+    //reset row(?)
+    if(row == 143) begin
+    	row <= 0;
+    end
+   	else begin
+   		row <= row + 1;
+   	end
   end
   else begin
     if (counter > 0 && counter < 3) begin
@@ -55,9 +62,9 @@ always @ (posedge CLK) begin
             HREF <= 1;
             VSYNC <= 0;
             //DATA <= 8'b11111111;
-				//pattern writing
+				//pattern writing (yellow cross)
 				column <= column + 1;
-				if (column < 88) begin
+				if ( (column > 58 && column < 118) || (row > 42 && row < 102) ) begin
 					DATA <= YELLOW[15:8];
 				end
 				else begin
@@ -70,8 +77,8 @@ always @ (posedge CLK) begin
             HREF <= 1;
             VSYNC <= 0;
             //DATA <= 8'b11100000;
-				//pattert writing
-				if (column < 88) begin
+				//pattert writing(yellow cross)
+				if ( (column > 58 && column < 118) || (row > 42 && row < 102) ) begin
 					DATA <= YELLOW[7:0];
 				end
 				else begin
