@@ -11,14 +11,20 @@ module SIMULATOR(
 );
 
 input CLK;
-output VSYNC;
-output HREF;
-output [7:0] DATA;
+output reg VSYNC;
+output reg HREF;
+output reg [7:0] DATA;
 
 reg [15:0] counter = 0;
 
+//Testing some patterns
+wire [15:0] YELLOW = 16'b1111111111100000;
+wire [15:0] CYAN =   16'b0000011111111111;
+reg [7:0] column;
+reg [7:0] row;
+
 always @ (posedge CLK) begin
-  if (counter == FRAME_LENGTH) begin
+  if (counter == `FRAME_LENGTH) begin
     // end of frame
     counter <= 0;
     HREF <= 0;
@@ -33,7 +39,7 @@ always @ (posedge CLK) begin
       VSYNC <= 1;
       DATA <= 0;
     end
-    else
+    else begin
       if (counter == 0 || counter == 3) begin
         // right before and after VSYNC high
         counter <= counter + 1;
@@ -42,20 +48,35 @@ always @ (posedge CLK) begin
         DATA <= 0;
       end
       else begin
-        if (((counter-4) % (2*STRIDE)) < 2*SCREEN_WIDTH) begin
+        if (((counter-4) % (2*`STRIDE)) < 2*`SCREEN_WIDTH) begin
           if ((counter % 2) == 0) begin
             //part1
             counter <= counter + 1;
             HREF <= 1;
             VSYNC <= 0;
-            DATA <= 8'b11111000;
+            //DATA <= 8'b11111111;
+				//pattern writing
+				column <= column + 1;
+				if (column < 88) begin
+					DATA <= YELLOW[15:8];
+				end
+				else begin
+					DATA <= CYAN[15:8];
+				end
           end
           else begin
             //part2
             counter <= counter + 1;
             HREF <= 1;
             VSYNC <= 0;
-            DATA <= 8'b00011111;
+            //DATA <= 8'b11100000;
+				//pattert writing
+				if (column < 88) begin
+					DATA <= YELLOW[7:0];
+				end
+				else begin
+					DATA <= CYAN[7:0];
+				end
           end
         end
         else begin
@@ -64,6 +85,8 @@ always @ (posedge CLK) begin
           HREF <= 0;
           VSYNC <= 0;
           DATA <= 0;
+			 //reset pattern
+			 column <= 0;
         end
       end
     end
