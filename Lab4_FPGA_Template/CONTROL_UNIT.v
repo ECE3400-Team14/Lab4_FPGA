@@ -30,7 +30,7 @@ always @ (posedge CLK) begin
     begin
       part1 <= input_data;
 	   write <= 1;
-	   w_en <= 0;
+	   w_en <= 1;
 		X_ADDR <= X_ADDR;
     end
     else
@@ -65,44 +65,5 @@ DOWNSAMPLE downsampler(
   .RGB332(output_data)
 );
 
-
-//  if ((Y_ADDR > 20 && Y_ADDR < 140) && (X_ADDR > 20 && X_ADDR < 160)) begin
-//    input_data <= 8'b10000100;
-//  end else begin
-//    input_data <= 8'b10000100;
-//  end
-  /*if (X_ADDR < 20)
-  begin
-    input_data <= 8'b11111111;
-  end
-  if (X_ADDR < 40 && X_ADDR > 19)
-  begin
-    input_data <= 8'b00000010;
-  end
-  if (X_ADDR < 60 && X_ADDR > 39)
-  begin
-    input_data <= 8'b00000100;
-  end
-  if (X_ADDR < 80 && X_ADDR > 59)
-  begin
-    input_data <= 8'b00001000;
-  end
-  if (X_ADDR < 100 && X_ADDR > 79)
-  begin
-    input_data <= 8'b00010000;
-  end
-  if (X_ADDR < 120 && X_ADDR > 99)
-  begin
-    input_data <= 8'b00100000;
-  end
-  if (X_ADDR < 140 && X_ADDR > 119)
-  begin
-    input_data <= 8'b01000000;
-  end
-  if (X_ADDR < 176 && X_ADDR > 139)
-  begin
-    input_data <= 8'b10000000;
-  end
-  */
   
 endmodule

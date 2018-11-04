@@ -115,31 +115,32 @@ IMAGE_PROCESSOR proc(
 );
 
 
-SIMULATOR(
+SIMULATOR simulator(
   .CLK(c0_sig),
   .VSYNC(VSYNC),
   .HREF(HREF),
   .DATA(sim_data)
 );
 
-/*Remove comments to user to use SIMULATOR
-CONTROL_UNIT control_unit(
-  .CLK(c0_sig),
-  .HREF(HREF),//GPIO_1_D[15]
-  .VSYNC(VSYNC),//GPIO_1_D[14]
-  .input_data(sim_data),//GPIO_1_D[23:16]
-  .output_data(pixel_data_RGB332),
-  .X_ADDR(X_ADDR),
-  .Y_ADDR(Y_ADDR),
-  .w_en(W_EN)
-);*/
 
-//Use GPIO from camera
+// simulator control unit
+//CONTROL_UNIT control_unit(
+//  .CLK(c0_sig),
+//  .HREF(HREF),
+//  .VSYNC(VSYNC),
+//  .input_data(sim_data),
+//  .output_data(pixel_data_RGB332),
+//  .X_ADDR(X_ADDR),
+//  .Y_ADDR(Y_ADDR),
+//  .w_en(W_EN)
+//);
+
+//camera control unit
 CONTROL_UNIT control_unit(
-  .CLK(c0_sig),
-  .HREF(GPIO_1_D[15]),//
-  .VSYNC(GPIO_1_D[14]),//
-  .input_data(GPIO_1_D[23:16]),//
+  .CLK(GPIO_1_D[13]),
+  .HREF(GPIO_1_D[15]),
+  .VSYNC(GPIO_1_D[14]),
+  .input_data(GPIO_1_D[23:16]),
   .output_data(pixel_data_RGB332),
   .X_ADDR(X_ADDR),
   .Y_ADDR(Y_ADDR),
@@ -160,6 +161,8 @@ end
 
 //wire [7:0] part;
 assign LED[7:0] = GPIO_1_D[23:16];
+//assign LED[7:4] = RESULT[1];
+//assign LED[3:0] = RESULT[0];
 //assign LED[0] = pixel_data_RGB332[7];
 //assign LED[1] = pixel_data_RGB332[6];
 //assign LED[2] = pixel_data_RGB332[5];
