@@ -111,18 +111,32 @@ IMAGE_PROCESSOR proc(
 	.VGA_PIXEL_X(VGA_PIXEL_X),
 	.VGA_PIXEL_Y(VGA_PIXEL_Y),
 	.VGA_VSYNC_NEG(VGA_VSYNC_NEG),
-	.RESULT(RESULT)
+	.RESULT(RESULT),
+	.shape(shape),
+	.top(top),
+	.bottom(bottom),
+	.second(second)
 );
+wire [1:0] shape;
+assign LED = {4'b0,shape, RESULT[1],RESULT[0]};
+//assign LED[7:4] = shape;
+//assign LED[3:0] = RESULT[3:0];
+//
+//SIMULATOR simulator(
+//  .CLK(c0_sig),
+//  .VSYNC(VSYNC),
+//  .HREF(HREF),
+//  .DATA(sim_data)
+//);
 
-
-SIMULATOR simulator(
+SIMULATOR_OLD simulator(
   .CLK(c0_sig),
   .VSYNC(VSYNC),
   .HREF(HREF),
   .DATA(sim_data)
 );
 
-
+ 
 // simulator control unit
 //CONTROL_UNIT control_unit(
 //  .CLK(c0_sig),
@@ -158,11 +172,10 @@ always @ (VGA_PIXEL_X, VGA_PIXEL_Y) begin
 				VGA_READ_MEM_EN = 1'b1;
 		end
 end
-
 //wire [7:0] part;
-assign LED[7:0] = GPIO_1_D[23:16];
-//assign LED[7:4] = RESULT[1];
-//assign LED[3:0] = RESULT[0];
+//assign LED[7:0] = GPIO_1_D[23:16];
+//assign LED[7:4] = shape;
+//assign LED[3:0] = RESULT[3:0];
 //assign LED[0] = pixel_data_RGB332[7];
 //assign LED[1] = pixel_data_RGB332[6];
 //assign LED[2] = pixel_data_RGB332[5];

@@ -1,9 +1,9 @@
 `define SCREEN_WIDTH 176
 `define SCREEN_HEIGHT 144
 `define STRIDE 180
-`define FRAME_LENGTH 2400000 // 0 VSYNC low, 1-2 VSYNC high, 3 VSYNC low, then start at 4, each row with 176*2 valid data bytes while HREF high, then 8 cycles while HREF low
+`define FRAME_LENGTH 800000 // 0 VSYNC low, 1-2 VSYNC high, 3 VSYNC low, then start at 4, each row with 176*2 valid data bytes while HREF high, then 8 cycles while HREF low
 
-module SIMULATOR(
+module SIMULATOR_OLD (
   CLK,
   VSYNC,
   HREF,
@@ -18,13 +18,9 @@ output reg [7:0] DATA;
 reg [15:0] counter = 0;
 
 //Testing some patterns
-//wire [15:0] RED =    16'b1111100000000000;
-//wire [15:0] GREEN =  16'b0000011111100000;
-//wire [15:0] BLUE =   16'b0000000000011111;
 wire [15:0] RED =    16'b0000111100000000;//444 red
 wire [15:0] GREEN =  16'b0000000011110000;//444 green
 wire [15:0] BLUE =   16'b0000000000001111;//444 blue
-
 wire [15:0] YELLOW = RED | GREEN;
 wire [15:0] CYAN =   GREEN | BLUE;
 wire [15:0] MAGENTA = RED | BLUE;
@@ -42,8 +38,8 @@ always @ (negedge CLK) begin
     VSYNC <= 0;
     DATA <= 0;
     //reset addr
-	 x <= 0;
-    y <= 0;
+	 x = 0;
+    y = 0;
   end
   else begin
     if (counter > 0 && counter < 3) begin
@@ -71,6 +67,9 @@ always @ (negedge CLK) begin
             counter <= counter + 1;
             HREF <= 1;
             VSYNC <= 0;
+            //DATA <= 8'b11111111;
+				//pattern writing (yellow cross)
+				x <= x + 1;
 				DATA = COLOR[15:8];
           end
           else begin
@@ -78,7 +77,7 @@ always @ (negedge CLK) begin
             counter <= counter + 1;
             HREF <= 1;
             VSYNC <= 0;
-				x <= x + 1;//move?
+            //DATA <= 8'b11100000;
 				DATA = COLOR[7:0];
           end
         end
@@ -88,6 +87,7 @@ always @ (negedge CLK) begin
 			 HREF <= 0;
 			 VSYNC <= 0;
 			 DATA <= 0;
+			 //reset pattern
 			 x <= 0;
         end
       end
@@ -96,52 +96,47 @@ always @ (negedge CLK) begin
 end
 
 //draw patterns here
-always @ (posedge CLK) begin
-	if ( ((x-88)**2+(y-72)**2)<2500 ) begin
-		COLOR <= YELLOW;
-	end
-	else begin
-		COLOR <= CYAN;
-	end
-//	if (x % 5 == 0) begin
-//		COLOR <= RED;
+always @ (negedge CLK) begin
+
+//	if ( ((x-88)**2+(y-72)**2)<2500 ) begin
+//		COLOR <= YELLOW;
 //	end
-//	else
-//	begin
-//		COLOR <= BLUE;
+//	else begin
+//		COLOR <= CYAN;
 //	end
-//  if (x < 20)
-//  begin
-//    COLOR <= RED;
-//  end
-//  if (x < 40 && x > 19)
-//  begin
-//    COLOR <= GREEN;
-//  end
-//  if (x < 60 && x > 39)
-//  begin
-//    COLOR <= BLUE;
-//  end
-//  if (x < 80 && x > 59)
-//  begin
-//    COLOR <= YELLOW;
-//  end
-//  if (x < 100 && x > 79)
-//  begin
-//    COLOR <= CYAN;
-//  end
-//  if (x < 120 && x > 99)
-//  begin
-//    COLOR <= MAGENTA;
-//  end
-//  if (x < 140 && x > 119)
-//  begin
-//    COLOR <= WHITE;
-//  end
-//  if (x < 176 && x > 139)
-//  begin
-//    COLOR <= BLACK;
-//  end
+
+  if (x < 20)
+  begin
+    COLOR <= RED;
+  end
+  if (x < 40 && x > 19)
+  begin
+    COLOR <= GREEN;
+  end
+  if (x < 60 && x > 39)
+  begin
+    COLOR <= BLUE;
+  end
+  if (x < 80 && x > 59)
+  begin
+    COLOR <= YELLOW;
+  end
+  if (x < 100 && x > 79)
+  begin
+    COLOR <= CYAN;
+  end
+  if (x < 120 && x > 99)
+  begin
+    COLOR <= MAGENTA;
+  end
+  if (x < 140 && x > 119)
+  begin
+    COLOR <= WHITE;
+  end
+  if (x < 176 && x > 139)
+  begin
+    COLOR <= BLACK;
+  end
 
 end
 
